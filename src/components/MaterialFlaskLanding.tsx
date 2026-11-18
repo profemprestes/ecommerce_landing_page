@@ -1,11 +1,11 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { initHeroCanvas } from './webgl/heroCanvas';
-import { initSpecsCanvas } from './webgl/specsCanvas';
-
-gsap.registerPlugin(ScrollTrigger);
+import { initHeroCanvas } from '@/webgl/heroCanvas';
+import { initSpecsCanvas } from '@/webgl/specsCanvas';
 
 type FinishId = 'sage' | 'basalt' | 'glacier';
 type SizeLabel = '750 ml' | '950 ml' | '1.2 L';
@@ -56,7 +56,7 @@ const SHOWCASE_STAGES = [
   },
 ];
 
-export default function App() {
+export default function MaterialFlaskLanding() {
   // Always open in light mode regardless of browser dark-mode preference
   const [theme, setTheme] = useState<'dark' | 'light'>('light');
   const [finish, setFinish] = useState<FinishId>('sage');
@@ -94,6 +94,7 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const prefersReduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
