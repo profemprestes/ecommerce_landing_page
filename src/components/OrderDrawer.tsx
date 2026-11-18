@@ -7,6 +7,7 @@ import {
   type OrderItem,
   type SizeCode,
 } from '@/data/catalog';
+import { CloseIcon, WhatsAppIcon } from '@/components/Icons';
 
 interface OrderDrawerProps {
   open: boolean;
@@ -25,11 +26,16 @@ export function OrderDrawer({
 }: OrderDrawerProps) {
   useEffect(() => {
     if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, [open, onClose]);
 
   const totalUYU = items.reduce(
@@ -42,17 +48,17 @@ export function OrderDrawer({
   return (
     <>
       <div
-        className="drawer-backdrop"
-        hidden={!open}
+        className={`drawer-backdrop${open ? ' is-open' : ''}`}
         onClick={onClose}
         aria-hidden="true"
       />
       <aside
-        className="order-drawer"
+        className={`order-drawer${open ? ' is-open' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        hidden={!open}
+        aria-hidden={!open}
+        inert={!open ? true : undefined}
       >
         <div className="drawer-header">
           <div>
@@ -69,7 +75,7 @@ export function OrderDrawer({
             aria-label="Cerrar pedido"
             onClick={onClose}
           >
-            ✕
+            <CloseIcon />
           </button>
         </div>
 
@@ -147,7 +153,8 @@ export function OrderDrawer({
               rel="noopener noreferrer"
               className="btn btn-primary btn-full"
             >
-              Enviar pedido por WhatsApp
+              <WhatsAppIcon />
+              <span>Enviar pedido por WhatsApp</span>
             </a>
             <button
               type="button"

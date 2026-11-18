@@ -12,6 +12,7 @@ import {
 } from '@/data/catalog';
 import { ProductCard } from '@/components/ProductCard';
 import { OrderDrawer } from '@/components/OrderDrawer';
+import { BagIcon } from '@/components/Icons';
 
 interface CatalogShellProps {
   products: readonly Product[];
@@ -78,6 +79,14 @@ export function CatalogShell({ products }: CatalogShellProps) {
 
   const totalQty = bag.reduce((sum, item) => sum + item.qty, 0);
   const featured = products[0];
+  const hasActiveFilters =
+    category !== 'todas' || sizeFilter !== 'todos' || onlyLastUnit;
+
+  const handleResetFilters = useCallback(() => {
+    setCategory('todas');
+    setSizeFilter('todos');
+    setOnlyLastUnit(false);
+  }, []);
 
   return (
     <>
@@ -107,6 +116,7 @@ export function CatalogShell({ products }: CatalogShellProps) {
               onClick={() => setDrawerOpen(true)}
               aria-label={`Abrir pedido (${totalQty} prendas)`}
             >
+              <BagIcon className="bag-icon" />
               <span>Pedido</span>
               <span className="bag-badge">{totalQty}</span>
             </button>
@@ -163,7 +173,7 @@ export function CatalogShell({ products }: CatalogShellProps) {
                 </span>
               </div>
               <div className="hero-feature-bar">
-                <div>
+                <div className="hero-feature-info">
                   <div className="hero-feature-name">
                     {featured.team} {featured.kitName} ({featured.season})
                   </div>
@@ -187,9 +197,20 @@ export function CatalogShell({ products }: CatalogShellProps) {
               <div className="section-kicker">Inventario verificado</div>
               <h2 className="section-heading">Catálogo Disponible</h2>
             </div>
-            <div className="catalog-count">
-              Mostrando <strong>{filteredProducts.length}</strong> de{' '}
-              {products.length} prendas
+            <div className="catalog-count-row">
+              <div className="catalog-count">
+                Mostrando <strong>{filteredProducts.length}</strong> de{' '}
+                {products.length} prendas
+              </div>
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  className="filter-reset-btn"
+                  onClick={handleResetFilters}
+                >
+                  Limpiar filtros
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -255,11 +276,7 @@ export function CatalogShell({ products }: CatalogShellProps) {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => {
-                  setCategory('todas');
-                  setSizeFilter('todos');
-                  setOnlyLastUnit(false);
-                }}
+                onClick={handleResetFilters}
               >
                 Limpiar filtros
               </button>

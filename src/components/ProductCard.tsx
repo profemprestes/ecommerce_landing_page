@@ -9,6 +9,7 @@ import {
   type Product,
   type SizeCode,
 } from '@/data/catalog';
+import { BagIcon, WhatsAppIcon } from '@/components/Icons';
 
 interface ProductCardProps {
   product: Product;
@@ -127,7 +128,8 @@ export const ProductCard = memo(function ProductCard({
             rel="noopener noreferrer"
             className="btn btn-primary btn-wa"
           >
-            Pedir por WhatsApp
+            <WhatsAppIcon />
+            <span>Pedir por WhatsApp</span>
           </a>
           <button
             type="button"
@@ -135,7 +137,8 @@ export const ProductCard = memo(function ProductCard({
             onClick={() => onAddToOrder(product, selectedSize)}
             aria-label={`Agregar ${product.team} talle ${selectedSize} al pedido`}
           >
-            + Pedido
+            <BagIcon />
+            <span>+ Pedido</span>
           </button>
         </div>
       </div>
