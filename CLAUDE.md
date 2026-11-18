@@ -4,68 +4,53 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Development is managed with Vite + pnpm/npm. The package scripts auto-install dependencies if `node_modules/.bin` is missing.
+Development is managed with Next.js App Router + `pnpm`.
 
 - Install dependencies
   ```bash
   pnpm install
-  # or
-  npm install
   ```
 
 - Start dev server
   ```bash
-  npm run dev
+  pnpm run dev
   ```
-  Runs `vite --port=3000 --host=0.0.0.0`. The `predev` hook ensures dependencies are present.
+  Runs `next dev --port 3000`.
 
 - Build for production
   ```bash
-  npm run build
+  pnpm run build
   ```
-  Runs `vite build`. `prebuild` ensures dependencies are present.
+  Runs `next build` (Turbopack).
 
-- Lint / type check
+- Start production server
   ```bash
-  npm run lint
+  pnpm run start
   ```
-  Runs `tsc --noEmit`. `prelint` ensures dependencies are present.
+
+- Type check
+  ```bash
+  pnpm exec tsc --noEmit
+  ```
 
 Tests are not configured in this repository.
 
 ## Architecture Overview
 
-React 19 + Vite 8 single-page landing page with TypeScript. No router; all sections are rendered in one `App` component.
+Next.js 16 App Router + React 19 + TypeScript storefront for **Fútbol en la Piel** (following `DESIGN.md`).
 
-**Entry**
-- `src/main.tsx` mounts `<App />` into `#root` and imports `src/styles/main.css`.
-- `index.html` is a minimal Vite template with `data-theme="light"` default.
+**Entry & Layout**
+- `src/app/layout.tsx` — Root Server layout loading `Barlow Condensed`, `Inter`, and `JetBrains Mono` via `next/font/google`, exporting `metadata`, and importing `src/styles/main.css`.
+- `src/app/page.tsx` — Server Component rendering `CatalogShell` (with hoisted `PRODUCTS`), `SizeGuideSection`, and `StoreFooter`.
 
-**Core UI**
-- `src/App.tsx` contains all UI state and sections:
-  - Theme toggle light/dark via `data-theme` on `<html>`
-  - Finish/size configurator for the product with price calculation
-  - Bag drawer state, quantity updates, checkout simulation
-  - Scroll-driven animations with GSAP + ScrollTrigger
-  - Smooth scrolling via Lenis, disabled on `prefers-reduced-motion`
-  - Hero tilt interaction, pinned 4-angle showcase with clipPath wipes, thermal comparison slider, bento editorial grid, order configurator
+**Catalog & Components**
+- `src/data/catalog.ts` — Typed product inventory (`PRODUCTS`), size measurements in cm, category tabs, `$U` currency formatter, and WhatsApp URL builders.
+- `src/components/CatalogShell.tsx` — Client Component managing category/size/last-unit filters and order drawer state with memoized callbacks.
+- `src/components/ProductCard.tsx` — Memoized (`React.memo`) Client Component for each `4:5` flat-lay jersey card with per-card size selector, cm measurements, last-unit alert badge, and direct WhatsApp CTA.
+- `src/components/OrderDrawer.tsx` — Slide-over drawer for multi-item WhatsApp orders.
+- `src/components/SizeGuideSection.tsx` & `src/components/StoreFooter.tsx` — Zero-JS Server Components.
 
-**Styling**
-- `src/styles/main.css` defines design tokens as CSS variables for light/dark themes, typography via self-hosted DM Sans / DM Mono fonts in `public/assets/fonts/`, and all component styles.
-- Theme colors, radius tokens, easing curves (`--ease-out`, `--ease-in-out`, `--ease-drawer`) are centralized in `:root`.
-
-**WebGL / Canvas**
-- `src/webgl/heroCanvas.ts` — WebGL2 procedural Alpine light & topographic mist shader. Renders to `#hero-gl-canvas`, reacts to pointer position and theme, skips on reduced motion.
-- `src/webgl/specsCanvas.ts` — Canvas2D rotating architectural wireframe / double-wall cross-section for the specs bento tile, speeds up on hover.
-
-**Build tooling**
-- `vite.config.ts` enables React plugin, dev server on port 3000 host 0.0.0.0.
-- `tsconfig.json` targets ES2022, strict mode, JSX `react-jsx`, `noEmit` for type checking only.
-
-**Public assets**
-- `public/favicon.svg`, fonts under `public/assets/fonts/`.
-- Untracked demo assets in `public/camisetas/` and `public/logos/` — football shirt images and logos for a future e-commerce variant described in `DESIGN.md`.
-
-## Design System Note
-
-`DESIGN.md` describes a separate brand concept *Fútbol en la Piel* — Uruguayan retro football shirts store with color palette celeste `#0072CE`, dorado `#FDB813`, sangre `#C8102E`, Barlow Condensed / Inter / JetBrains Mono typography, and WhatsApp checkout. The current codebase implements the *Material Flask* water bottle demo. Keep changes consistent with the existing React/GSAP/WebGL structure unless migrating to the football store concept.
+**Styling & Assets**
+- `src/styles/main.css` — Light-mode design tokens (`#F8FAFC` / `#FFFFFF` surfaces, `#0072CE` primary celeste, `#FDB813` retro gold, `#C8102E` last-unit alert, `4px` radius).
+- `public/camisetas/` — Real flat-lay product photography.
+- `public/logos/` — Brand logos (`futbolenlapiel_horizontal_transparente.png`, `futbol_logo_mejorado_v2.png`).
