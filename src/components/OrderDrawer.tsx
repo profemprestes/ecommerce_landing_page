@@ -48,17 +48,18 @@ export function OrderDrawer({
   return (
     <>
       <div
-        className={`drawer-backdrop${open ? ' is-open' : ''}`}
+        className="drawer-backdrop"
+        id="drawer-backdrop"
+        hidden={!open}
         onClick={onClose}
-        aria-hidden="true"
       />
       <aside
-        className={`order-drawer${open ? ' is-open' : ''}`}
+        className="bag-drawer"
+        id="bag-drawer"
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        aria-hidden={!open}
-        inert={!open ? true : undefined}
+        hidden={!open}
       >
         <div className="drawer-header">
           <div>
@@ -71,7 +72,8 @@ export function OrderDrawer({
           </div>
           <button
             type="button"
-            className="icon-close"
+            className="icon-btn"
+            id="drawer-close"
             aria-label="Cerrar pedido"
             onClick={onClose}
           >
@@ -79,92 +81,91 @@ export function OrderDrawer({
           </button>
         </div>
 
-        <div className="drawer-body">
-          {items.length === 0 ? (
-            <div className="drawer-empty">
-              <p>Todavía no agregaste camisetas a tu pedido.</p>
-              <a
-                href="#catalogo"
-                className="btn btn-primary"
-                onClick={onClose}
+        <div className="drawer-body" id="drawer-body">
+          <div className="drawer-empty" id="drawer-empty" hidden={items.length > 0}>
+            <p>Todavía no agregaste camisetas a tu pedido.</p>
+            <a
+              href="#catalogo"
+              className="btn btn-primary btn-sm"
+              id="drawer-empty-cta"
+              onClick={onClose}
+            >
+              Ver catálogo
+            </a>
+          </div>
+
+          <div className="drawer-items" id="drawer-items" hidden={items.length === 0}>
+            {items.map((item) => (
+              <div
+                key={`${item.product.id}-${item.size}`}
+                className="bag-item"
               >
-                Ver catálogo
-              </a>
-            </div>
-          ) : (
-            <div className="drawer-list">
-              {items.map((item) => (
-                <div
-                  key={`${item.product.id}-${item.size}`}
-                  className="drawer-item"
-                >
-                  <img
-                    src={item.product.image}
-                    alt={`${item.product.team} ${item.product.kitName}`}
-                    className="drawer-thumb"
-                  />
-                  <div className="drawer-info">
-                    <div className="drawer-item-title">
-                      {item.product.team} — {item.product.kitName}
-                    </div>
-                    <div className="drawer-item-meta">
-                      {item.product.season} · Talle {item.size} ·{' '}
-                      {formatUYU(item.product.priceUYU)}
-                    </div>
-                    <div className="drawer-qty-row">
-                      <button
-                        type="button"
-                        className="qty-btn"
-                        aria-label="Restar unidad"
-                        onClick={() =>
-                          onUpdateQty(item.product.id, item.size, -1)
-                        }
-                      >
-                        −
-                      </button>
-                      <span className="qty-val">{item.qty}</span>
-                      <button
-                        type="button"
-                        className="qty-btn"
-                        aria-label="Sumar unidad"
-                        onClick={() =>
-                          onUpdateQty(item.product.id, item.size, 1)
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
+                <img
+                  src={item.product.image}
+                  alt={`${item.product.team} ${item.product.kitName}`}
+                  className="bag-item-thumb"
+                />
+                <div className="bag-item-info">
+                  <div className="bag-item-name">
+                    {item.product.team} — {item.product.kitName}
+                  </div>
+                  <div className="bag-item-meta">
+                    {item.product.season} · Talle {item.size} ·{' '}
+                    {formatUYU(item.product.priceUYU)}
+                  </div>
+                  <div className="bag-qty-row">
+                    <button
+                      type="button"
+                      className="qty-btn"
+                      aria-label="Restar unidad"
+                      onClick={() =>
+                        onUpdateQty(item.product.id, item.size, -1)
+                      }
+                    >
+                      −
+                    </button>
+                    <span className="bag-qty">{item.qty}</span>
+                    <button
+                      type="button"
+                      className="qty-btn"
+                      aria-label="Sumar unidad"
+                      onClick={() =>
+                        onUpdateQty(item.product.id, item.size, 1)
+                      }
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </div>
 
-        {items.length > 0 ? (
-          <div className="drawer-footer">
-            <div className="drawer-total-row">
-              <span>Total estimado</span>
-              <span className="drawer-total">{formatUYU(totalUYU)}</span>
-            </div>
-            <a
-              href={whatsappOrderUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary btn-full"
-            >
-              <WhatsAppIcon />
-              <span>Enviar pedido por WhatsApp</span>
-            </a>
-            <button
-              type="button"
-              className="btn btn-ghost-sm btn-full"
-              onClick={onClear}
-            >
-              Vaciar pedido
-            </button>
+        <div className="drawer-footer" id="drawer-footer" hidden={items.length === 0}>
+          <div className="drawer-total-row">
+            <span>Total estimado</span>
+            <span className="drawer-total" id="drawer-total">
+              {formatUYU(totalUYU)}
+            </span>
           </div>
-        ) : null}
+          <a
+            href={whatsappOrderUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary btn-full"
+          >
+            <WhatsAppIcon />
+            <span>Enviar pedido por WhatsApp</span>
+          </a>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm btn-full"
+            onClick={onClear}
+          >
+            Vaciar pedido
+          </button>
+        </div>
       </aside>
     </>
   );

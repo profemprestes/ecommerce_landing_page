@@ -6,7 +6,7 @@ export function SizeGuideSection() {
       <div className="container info-grid">
         <div className="info-card">
           <div className="section-kicker">Talles verificados en cm</div>
-          <h2 className="section-heading">Guía de Medidas</h2>
+          <h2 className="section-title">Guía de Medidas</h2>
           <p className="section-desc">
             Medimos cada prenda en plano (axila a axila y hombro a base). Las
             camisetas <strong>Versión Jugador</strong> tienen calce entallado:
@@ -40,7 +40,7 @@ export function SizeGuideSection() {
 
         <div id="envios" className="info-card">
           <div className="section-kicker">Logística &amp; Pagos Uruguay</div>
-          <h2 className="section-heading">Envíos a Todo el País</h2>
+          <h2 className="section-title">Envíos a Todo el País</h2>
           <p className="section-desc">
             Stock físico en Montevideo listo para despachar en el día, sin
             esperas de importación ni preventas.

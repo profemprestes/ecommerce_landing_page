@@ -133,7 +133,7 @@ export const ProductCard = memo(function ProductCard({
           </a>
           <button
             type="button"
-            className="btn btn-outline btn-add"
+            className="btn btn-ghost btn-add"
             onClick={() => onAddToOrder(product, selectedSize)}
             aria-label={`Agregar ${product.team} talle ${selectedSize} al pedido`}
           >
